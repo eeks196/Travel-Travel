@@ -1,16 +1,17 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, current_app
 import json
+from datetime import timedelta
+import random
 from src import db
 
 
-customers = Blueprint('customers', __name__)
+hotel = Blueprint('hotel', __name__)
 
-# Get all customers from the DB
-@customers.route('/customers', methods=['GET'])
-def get_customers():
+# Get all hotels from the DB
+@hotel.route('/hotel', methods=['GET'])
+def get_hotels():
     cursor = db.get_db().cursor()
-    cursor.execute('select customerNumber, customerName,\
-        creditLimit from customers')
+    cursor.execute('select * from hotel')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
@@ -21,11 +22,11 @@ def get_customers():
     the_response.mimetype = 'application/json'
     return the_response
 
-# Get customer detail for customer with particular userID
-@customers.route('/customers/<userID>', methods=['GET'])
-def get_customer(userID):
+# Get all rooms from the DB
+@hotel.route('/hotel/rooms', methods=['GET'])
+def get_rooms():
     cursor = db.get_db().cursor()
-    cursor.execute('select * from customers where customerNumber = {0}'.format(userID))
+    cursor.execute('select * from room natural join hotel')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()

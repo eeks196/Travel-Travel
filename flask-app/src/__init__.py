@@ -25,13 +25,11 @@ def create_app():
     db.init_app(app)
     
     # Import the various routes
-    from src.views import views
     from src.customer.customer import customer
     from src.airline.airline import airline
     from src.hotel.hotel import hotel
 
     # Register the routes that we just imported so they can be properly handled
-    app.register_blueprint(views,       url_prefix='/classic')
     app.register_blueprint(customer,   url_prefix='/classic')
     app.register_blueprint(airline, url_prefix='/classic')
     app.register_blueprint(hotel, url_prefix='/classic')

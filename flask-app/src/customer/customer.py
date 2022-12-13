@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, make_response, current_app
 import json
+import string
 from datetime import timedelta
 from datetime import datetime
 import random
@@ -63,9 +64,9 @@ def get_Flights():
 @customer.route('/customer/flight_invoice', methods=['POST'])
 def bookFlight():
     current_app.logger.info(request.form)
-    userID = request.form['User_ID']
+    userID = request.form['uid']
     flightID = request.form['Flight_ID']
-    seatNum = random.randint(0, 150)
+    seatNum = '"' + random.choice(string.ascii_lowercase) + str(random.randint(0, 10)) + '"'
     price = round(random.uniform(100.00, 700.00), 2)
     cursor = db.get_db().cursor()
     cursor.execute(f'insert into invoice_flights (price, seatNum, flightId, custId) VALUES ({price}, {seatNum}, {flightID}, {userID})')
@@ -86,8 +87,10 @@ def bookRoom():
     starttime = datetime.strptime(start, '%Y-%m-%d')
     endtime = datetime.strptime(end, '%Y-%m-%d')
     days = (endtime - starttime).days
-    price = days * 175.54
+    cursor.execute(f'select price from room where number = {roomNum} and hotelID = {hotel}')
+    rate = float (cursor.fetchall()[0][0])
+    price = days * rate
     cursor.execute(f'insert into invoice_room (startDate, endDate, cost, customerId) values ({start}, {end}, {price}, {userID});')
-
     db.get_db().commit()
+    cursor.execute(f'insert into room_booking (number) values ({roomNum})')
     return 'Hello your room has been booked!'

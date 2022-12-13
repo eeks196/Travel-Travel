@@ -6,7 +6,7 @@ flush privileges;
 use travel;
 
 create table customer (
-	id INT primary key Auto_Increment,
+	id INT primary key Auto_Increment not null,
 	first_name VARCHAR(50),
 	last_name VARCHAR(50),
 	email VARCHAR(50),
@@ -25,7 +25,7 @@ create table Airline (
 );
 
 create table hotel (
-	hotelId INT primary key Auto_Increment,
+	hotelId INT primary key Auto_Increment not null,
 	name VARCHAR(50),
 	streetAddress VARCHAR(50),
 	zipCode VARCHAR(50),
@@ -36,7 +36,7 @@ create table hotel (
 
 
 create table Flight (
-	flightID INT primary key Auto_Increment,
+	flightID INT primary key Auto_Increment not null,
 	startDateTime DATE,
 	endDateTime DATE,
 	arrivalLocation VARCHAR(50),
@@ -47,27 +47,27 @@ create table Flight (
 
 
 create table room (
-	number INT,
+	number INT not null,
 	beds INT,
 	price DECIMAL(5,2),
 	type VARCHAR(12),
-    hotelID int,
+    hotelID int not null,
 	primary key(number, hotelId),
     foreign key(hotelID) references hotel(hotelId)
 );
 
 create table invoice_flights (
-	invoiceId INT primary key Auto_Increment,
+	invoiceId INT primary key Auto_Increment not null,
 	price DECIMAL(5,2),
 	seatNum VARCHAR(50),
-	flightId INT,
-	custId INT,
+	flightId INT not null,
+	custId INT not null,
     foreign key(custId) references customer(id),
 	foreign key(flightID) references Flight(flightID)
 );
 
 create table invoice_room (
-	invoiceId INT primary key Auto_Increment,
+	invoiceId INT primary key Auto_Increment not null,
 	startDate DATE,
 	endDate DATE,
 	cost DECIMAL(10,2),
@@ -76,7 +76,7 @@ create table invoice_room (
 );
 
 create table room_booking (
-	number INT,
+	number INT not null,
 	invoiceId INT Auto_Increment,
     primary key(number, invoiceId),
     foreign key (number) references room(number),
